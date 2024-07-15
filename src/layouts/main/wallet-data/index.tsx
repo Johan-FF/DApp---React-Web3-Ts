@@ -15,7 +15,7 @@ import useTruncatedAddress from "../../../hooks/useTruncatedAddress";
 
 function WalletData() {
   const [balance, setBalance] = useState(0);
-  const [isSupportedChain, setIsSupportedChain] = useState(false);
+  const [isSupportedChain, setIsSupportedChain] = useState(true);
   const { isActive, account, connector, chainId } = useWeb3React();
 
   const connect = useCallback(() => {
@@ -50,6 +50,7 @@ function WalletData() {
   }, [connect]);
 
   useEffect(() => {
+    if (typeof chainId === "undefined") return;
     const isSupported = chainId == 11155111;
     setIsSupportedChain(isSupported);
     if (!isSupported) disconnect();
