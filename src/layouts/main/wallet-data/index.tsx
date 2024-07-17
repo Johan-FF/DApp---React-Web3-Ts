@@ -1,95 +1,88 @@
-import {
-  Flex,
-  Button,
-  Tag,
-  TagLabel,
-  Badge,
-  TagCloseButton,
-} from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { useWeb3React } from "@web3-react/core";
 import { useCallback, useEffect, useState } from "react";
 
-import { connectors } from "../../../config/web3";
+import { useAccount } from "wagmi";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+
 import useTruncatedAddress from "../../../hooks/useTruncatedAddress";
 
 function WalletData() {
+  const {
+    address,
+    addresses,
+    chain,
+    chainId,
+    connector,
+    isConnected,
+    isReconnecting,
+    isConnecting,
+    isDisconnected,
+    status,
+  } = useAccount();
   const [balance, setBalance] = useState(0);
   const [isSupportedChain, setIsSupportedChain] = useState(true);
-  const { isActive, account, connector, chainId } = useWeb3React();
+  // const { active, activate, deactivate, account, error, library } = useWeb3React();
+
+  // const isUnsupportedChain = error instanceof UnsupportedChainIdError;
 
   const connect = useCallback(() => {
-    connector.activate(connectors);
-    localStorage.setItem("previouslyConnected", "true");
-  }, [isActive]);
+    connector?.connect();
+    // activate(connector);
+    localStorage.setItem("IMANFT-previouslyConnected", "true");
+  }, [isConnected]);
 
   const disconnect = () => {
-    if (connector?.deactivate) {
-      void connector.deactivate();
-    } else {
-      void connector.resetState();
-    }
-    localStorage.removeItem("previouslyConnected");
+    // deactivate();
+    connector?.disconnect();
+    localStorage.removeItem("IMANFT-previouslyConnected");
   };
 
-  const getBalance = useCallback(async () => {
-    const toSet: any = await connector.provider?.request({
-      method: "eth_getBalance",
-      params: [account, "0x0"],
-    });
-    const balanceInEther = toSet / 1e18;
-    setBalance(balanceInEther);
-  }, [connector?.provider, account]);
+  // const getBalance = useCallback(async () => {
+  //   const toSet = await library.eth.getBalance(account);
+  //   setBalance((toSet / 1e18).toFixed(2));
+  // }, [library?.eth, account]);
+
+  // useEffect(() => {
+  //   if (active) getBalance();
+  // }, [active, getBalance]);
 
   useEffect(() => {
-    if (isActive) getBalance();
-  }, [isActive, getBalance]);
-
-  useEffect(() => {
-    if (localStorage.getItem("previouslyConnected") === "true") connect();
+    if (localStorage.getItem("IMANFT-previouslyConnected") === "true")
+      connect();
   }, [connect]);
 
-  useEffect(() => {
-    if (typeof chainId === "undefined") return;
-    const isSupported = chainId == 11155111;
-    setIsSupportedChain(isSupported);
-    if (!isSupported) disconnect();
-  }, [chainId]);
-
-  const truncatedAddress = useTruncatedAddress(account);
+  const truncatedAddress = useTruncatedAddress(address);
 
   return (
-    <Flex alignItems={"center"}>
-      {isActive ? (
-        <Tag colorScheme="green" borderRadius="full">
-          <TagLabel>
+    <section className="flex items-center">
+      {isConnected ? (
+        <div className="bg-cyan-400 rounded-full">
+          <span>
             <Link to="/imas">{truncatedAddress}</Link>
-          </TagLabel>
-          <Badge
-            display={{
-              base: "none",
-              md: "block",
-            }}
-            variant="solid"
-            fontSize="0.8rem"
-            ml={1}
-          >
+          </span>
+          <span className="hidden md:block solid text-sm ml-1">
             ~{balance} Ξ
-          </Badge>
-          <TagCloseButton onClick={disconnect} />
-        </Tag>
+          </span>
+          <IconButton onClick={disconnect}>
+            <CloseIcon />
+          </IconButton>
+        </div>
       ) : (
-        <Button
-          variant={"solid"}
-          colorScheme={"green"}
-          size={"sm"}
-          onClick={connect}
-          disabled={!isSupportedChain}
-        >
-          {!isSupportedChain ? "Unsupported Chain" : "Connect Chain"}
-        </Button>
+        <div>
+          <button
+            className="bg-cyan-400  size-min"
+            onClick={connect}
+            disabled={!isSupportedChain}
+          >
+            {!isSupportedChain ? "Unsupported Chain" : "Connect Chain"}
+          </button>
+          {isConnected ? <h3>Wallet {truncatedAddress}</h3> : <ConnectButton />}
+        </div>
       )}
-    </Flex>
+    </section>
   );
 }
 

@@ -1,15 +1,9 @@
-import {
-  Box,
-  Flex,
-  HStack,
-  IconButton,
-  useDisclosure,
-  useColorModeValue,
-  Stack,
-  Image,
-  Text,
-  Heading,
-} from "@chakra-ui/react";
+import { ReactNode, useState } from "react";
+
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
+
 import NavLink from "./nav-link";
 import Footer from "./footer";
 import WalletData from "./wallet-data";
@@ -26,79 +20,64 @@ const LINKS = [
 ];
 
 interface MainLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 function MainLayout({ children }: MainLayoutProps) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const onOpen = () => setIsOpen(true);
+  const onClose = () => setIsOpen(false);
 
   return (
-    <Flex minH="100vh" direction="column">
-      <Box
-        mx="auto"
-        maxW={"7xl"}
-        width="100%"
-        bg={useColorModeValue("white", "gray.800")}
-        px={4}
-      >
-        <Flex
-          bg={useColorModeValue("white", "gray.800")}
-          color={useColorModeValue("gray.600", "white")}
-          minH={"60px"}
-          py={{ base: 2 }}
-          px={{ base: 4 }}
-          borderBottom={1}
-          borderStyle={"solid"}
-          borderColor={useColorModeValue("gray.200", "gray.900")}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
+    <main className="min-h-screen flex flex-col">
+      <section className="mx-auto max-w-7xl w-full bg-emerald-800 px-4">
+        <div className="text-slate-400 min-h-16 py-2 px-4 border-b-2 border-b-solid border-b-cyan-400 flex items-center justify-between">
           <IconButton
-            size={"md"}
-            // icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+            className="flex md:hidden"
             aria-label={"Open Menu"}
-            display={{ md: "none" }}
             onClick={isOpen ? onClose : onOpen}
-          />
-          <HStack spacing={8} alignItems={"center"}>
-            <Flex alignItems="center">
-              {/* <Image src="./images/platzi.svg" width="80px" /> */}
-              <Heading size="md" color="purple" mt={0.2} ml={1}>
-                Imas
-              </Heading>
-            </Flex>
-            <HStack
-              as={"nav"}
-              spacing={4}
-              display={{ base: "none", md: "flex" }}
-            >
+          >
+            {isOpen ? <CloseIcon /> : <MenuIcon />}
+          </IconButton>
+          <div className="space-x-8 flex items-center">
+            <span className="flex items-center">
+              <img
+                className="w-20"
+                src="./svg/Ima-NFT.svg"
+                alt="Ima NFT"
+                loading="lazy"
+              />
+              <h1 className="text-3xl text-slate-400 mt-1 ml-1">Ima NFT</h1>
+            </span>
+            <span className="space-x-4 hidden md:flex">
               {LINKS.map(({ name, to }) => (
                 <NavLink key={name} to={to}>
-                  <Text>{name}</Text>
+                  {name}
                 </NavLink>
               ))}
-            </HStack>
-          </HStack>
+            </span>
+          </div>
           <WalletData />
-        </Flex>
+        </div>
 
         {isOpen ? (
-          <Box pb={4} display={{ md: "none" }}>
-            <Stack as={"nav"} spacing={4}>
+          <div className="pb-4 md:hidden">
+            <span className="space-x-4">
               {LINKS.map(({ name, to }) => (
                 <NavLink key={name} to={to}>
-                  <Text>{name}</Text>
+                  {name}
                 </NavLink>
               ))}
-            </Stack>
-          </Box>
+            </span>
+          </div>
         ) : null}
-      </Box>
-      <Box mx="auto" flex={1} p={4} maxW={"7xl"} width="100%">
+      </section>
+      <section className="mx-auto flex-1 p-4 max-w-7xl w-full">
         {children}
-      </Box>
+      </section>
       <Footer />
-    </Flex>
+    </main>
   );
 }
 

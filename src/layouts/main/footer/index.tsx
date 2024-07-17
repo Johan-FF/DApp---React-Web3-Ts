@@ -1,33 +1,17 @@
-import {
-  Box,
-  Container,
-  Text,
-  Link,
-  useColorModeValue,
-} from "@chakra-ui/react";
-
 function Footer() {
   return (
-    <Box
-      w="100%"
-      bg={useColorModeValue("white", "gray.800")}
-      color={useColorModeValue("gray.700", "gray.200")}
-    >
-      <Box
-        borderTopWidth={1}
-        borderStyle={"solid"}
-        borderColor={useColorModeValue("gray.200", "gray.700")}
-      >
-        <Container>
-          <Text>
+    <section className="w-full bg-emerald-800 text-slate-400">
+      <div className="border-t-2 border-solid border-t-cyan-400">
+        <span>
+          <h3>
             © {new Date().getFullYear()} Original designs by
-            <Link ml={1} href="https://twitter.com/pablostanley" isExternal>
-              Pablo Stanley 🎨
-            </Link>
-          </Text>
-        </Container>
-      </Box>
-    </Box>
+            <a className="ml-1" href="https://github.com/Johan-FF">
+              Johan-FF
+            </a>
+          </h3>
+        </span>
+      </div>
+    </section>
   );
 }
 
