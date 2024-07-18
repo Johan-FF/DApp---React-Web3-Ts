@@ -1,12 +1,14 @@
 function Footer() {
   return (
-    <section className="w-full bg-emerald-800 text-slate-400">
-      <div className="border-t-2 border-solid border-t-cyan-400">
+    <section className="w-full text-slate-400">
+      <div className="border-t-2 border-solid py-4 bg-[#000000aa] border-t-cyan-400 flex justify-center">
         <span>
           <h3>
-            © {new Date().getFullYear()} Original designs by
-            <a className="ml-1" href="https://github.com/Johan-FF">
-              Johan-FF
+            <a
+              className="ml-1 hover:text-cyan-400"
+              href="https://github.com/Johan-FF"
+            >
+              © {new Date().getFullYear()} Original designs by Johan-FF
             </a>
           </h3>
         </span>
