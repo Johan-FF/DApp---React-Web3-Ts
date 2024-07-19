@@ -1,7 +1,7 @@
 const ImaArtifact = {
   address: {
     11155111: "0x2a3ba21125e3992cD6fbcf6F23913A870CD08C08",
-    0: "0x2a3ba21125e3992cD6fbcf6F23913A870CD08C08",
+    0: "2a3ba21125e3992cD6fbcf6F23913A870CD08C08",
   },
   abi: [
     {
