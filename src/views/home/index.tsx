@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAccount, useReadContract } from "wagmi";
+import { Link } from "react-router-dom";
 
 import ImaArtifact from "../../config/web3/artifacts/Ima";
 
@@ -40,7 +41,7 @@ function Home() {
     dnaPreview.refetch();
     image.refetch();
     setImageSrc(image.data ? image.data.toString() : "");
-  }, [isConnected, address]);
+  }, [totalSupply.isSuccess, dnaPreview.isSuccess, image.isSuccess, address]);
 
   useEffect(() => {
     getImasData();
@@ -49,15 +50,8 @@ function Home() {
   return (
     <MainLayout>
       <div className="text-slate-300 w-full min-h-full flex justify-evenly items-center ">
-        <img
-          style={{ filter: "drop-shadow(10px 10px 10px rgba(0, 0, 0))" }}
-          className="w-60"
-          src="./svg/Ima-NFT.svg"
-          alt="Ima NFT"
-          loading="lazy"
-        />
         <section
-          className="flex flex-col-reverse md:flex-row items-center space-x-8 md:space-x-10 py-20 md:py-28 "
+          className="flex flex-col-reverse md:flex-row items-center space-x-8 md:space-x-10 w-3/4"
           // align={"center"}
           // spacing={{ base: 8, md: 10 }}
           // py={{ base: 20, md: 28 }}
@@ -67,77 +61,113 @@ function Home() {
             className="flex-1 space-x-5 md:space-x-10"
             //  flex={1} spacing={{ base: 5, md: 10 }}
           >
-            <p className="text-5xl max-w-96 p-8 rounded-r-md bg-[#000000aa]">
+            <p className="text-5xl max-w-96 p-8 rounded-md bg-[#000000aa]">
               Create avatars representing NFTs with the{" "}
               <span className="text-cyan-400">network of your choice</span>.
             </p>
             <div
-              className="space-x-4 sm:space-x-6 "
-              spacing={{ base: 4, sm: 6 }}
-              direction={{ base: "column", sm: "row" }}
+              className="space-x-4 sm:space-x-6 flex flex-col sm:flex-row mt-4"
+              // spacing={{ base: 4, sm: 6 }}
+              // direction={{ base: "column", sm: "row" }}
             >
-              <Button
-                rounded={"full"}
-                size={"lg"}
-                fontWeight={"normal"}
-                px={6}
-                colorScheme={"green"}
-                bg={"green.400"}
-                _hover={{ bg: "green.500" }}
-                disabled={!platziPunks}
+              <button
+                className="rounded-full px-6 bg-cyan-400 hover:bg-cyan-500 disabled:bg-cyan-800 text-black font-semibold"
+                // rounded={"full"}
+                // size={"lg"}
+                // fontWeight={"normal"}
+                // px={6}
+                // colorScheme={"green"}
+                // bg={"green.400"}
+                // _hover={{ bg: "green.500" }}
+                disabled={
+                  !totalSupply.isSuccess ||
+                  !dnaPreview.isSuccess ||
+                  !image.isSuccess
+                }
               >
-                Obtén tu punk
-              </Button>
-              <Link to="/punks">
-                <Button
-                  rounded={"full"}
-                  size={"lg"}
-                  fontWeight={"normal"}
-                  px={6}
-                >
-                  Galería
-                </Button>
-              </Link>
+                Get an Avatar
+              </button>
+              <button
+                className="rounded-full font-semibold px-6 border-2 border- border-cyan-400 hover:border-cyan-500 disabled:border-cyan-800"
+                // rounded={"full"}
+                // size={"lg"}
+                // fontWeight={"normal"}
+                // px={6}
+              >
+                <Link to="/imas">Gallery</Link>
+              </button>
             </div>
           </div>
-          <Flex
-            flex={1}
-            direction="column"
-            justify={"center"}
-            align={"center"}
-            position={"relative"}
-            w={"full"}
+          <div
+            className="flex-1 flex-col justify-center items-center w-full "
+            // flex={1}
+            // direction="column"
+            // justify={"center"}
+            // align={"center"}
+            // position={"relative"}
+            // w={"full"}
           >
-            <Image src={active ? imageSrc : "https://avataaars.io/"} />
-            {active ? (
-              <>
-                <Flex mt={2}>
-                  <Badge>
-                    Next ID:
-                    <Badge ml={1} colorScheme="green">
-                      1
-                    </Badge>
-                  </Badge>
-                  <Badge ml={2}>
-                    Address:
-                    <Badge ml={1} colorScheme="green">
-                      0x0000...0000
-                    </Badge>
-                  </Badge>
-                </Flex>
-                <Button
-                  onClick={getPlatziPunksData}
-                  mt={4}
-                  size="xs"
-                  colorScheme="green"
+            <div className="w-full flex justify-center">
+              <img
+                style={{ filter: "drop-shadow(10px 10px 10px rgba(0, 0, 0))" }}
+                className="w-60"
+                // src="./svg/Ima-NFT.svg"
+                src={isConnected ? imageSrc : "https://avataaars.io/"}
+                alt="Ima NFT"
+                loading="lazy"
+              />
+            </div>
+            {/* <Image src={isConnected ? imageSrc : "https://avataaars.io/"} /> */}
+            {isConnected ? (
+              <div className="w-full flex flex-col items-center">
+                <div
+                  className="mt-2"
+                  // mt={2}
                 >
-                  Actualizar
-                </Button>
-              </>
+                  <span>
+                    Next ID:
+                    <span
+                      className="ml-1 bg-cyan-400"
+                      // ml={1}
+                      // colorScheme="green"
+                    >
+                      1
+                    </span>
+                  </span>
+                  <span
+                    className="ml-2"
+                    //  ml={2}
+                  >
+                    Address:
+                    <span
+                      className="ml-1 bg-cyan-400"
+                      //  ml={1} colorScheme="green"
+                    >
+                      0x0000...0000
+                    </span>
+                  </span>
+                </div>
+                <button
+                  className="mt-4 rounded-full px-6 bg-cyan-400 hover:bg-cyan-500 disabled:bg-cyan-800 text-black font-semibold max-w-min"
+                  onClick={getImasData}
+                  // mt={4}
+                  // size="xs"
+                  // colorScheme="green"
+                >
+                  Update
+                </button>
+              </div>
             ) : (
-              <Badge mt={2}>Wallet desconectado</Badge>
+              <div className="w-full flex justify-center">
+                <span
+                  className="mt-2 rounded-md bg-[#000000aa] px-8 font-bold"
+                  // mt={2}
+                >
+                  Disconnected Wallet
+                </span>
+              </div>
             )}
-          </Flex>
+          </div>
         </section>
       </div>
     </MainLayout>

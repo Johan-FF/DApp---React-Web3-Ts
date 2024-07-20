@@ -20,7 +20,10 @@ import App from "./App.tsx";
 const config = getDefaultConfig({
   appName: "ImaNFT",
   projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID,
-  chains: [mainnet, polygon, optimism, arbitrum, arbitrumSepolia, base],
+  chains: [
+    // mainnet, polygon, optimism, arbitrum, base,
+    arbitrumSepolia,
+  ],
   transports: {
     [mainnet.id]: http(""),
     [polygon.id]: http(""),
