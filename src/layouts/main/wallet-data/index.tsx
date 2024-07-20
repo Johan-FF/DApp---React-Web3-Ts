@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+// import { useCallback, useEffect, useState } from "react";
 
 import { useAccount, useReadContract } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -11,9 +11,9 @@ import ImaArtifact from "../../../config/web3/artifacts/Ima";
 import useTruncatedAddress from "../../../hooks/useTruncatedAddress";
 
 function WalletData() {
-  const [balance, setBalance] = useState(0);
+  // const [balance, setBalance] = useState(0);
   const { address, connector, isConnected } = useAccount();
-  const { data, isLoading, refetch } = useReadContract({
+  const { data, isLoading } = useReadContract({
     abi: ImaArtifact.abi,
     address: `0x${ImaArtifact.address[0]}`,
     functionName: "balanceOf",
