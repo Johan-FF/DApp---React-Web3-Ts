@@ -1,13 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import reaact, { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
-
-import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import { waitForTransactionReceipt } from "wagmi/actions";
 
 import { toast } from "react-toastify";
 
-import { config } from "../../config/wagmi";
-import ImaArtifact from "../../config/wagmi/artifacts/Ima";
+import useIma from "../../hooks/useIma";
 
 import MainLayout from "../../layouts/main";
 
@@ -15,70 +11,46 @@ function Home() {
   const [isMinting, setIsMinting] = useState(false);
   const [imageSrc, setImageSrc] = useState("");
 
-  const { address, isConnected } = useAccount();
-  const { writeContractAsync } = useWriteContract();
-
-  const mint = async () => {
-    setIsMinting(true);
-    try {
-      const txHash = await writeContractAsync({
-        abi: ImaArtifact.abi,
-        address: `0x${ImaArtifact.address[0]}`,
-        functionName: "mint",
-        args: [address],
-      });
-
-      await waitForTransactionReceipt(config, {
-        confirmations: 1,
-        hash: txHash,
-      });
-
-      setIsMinting(false);
-      toast("Minted successfully");
-
-      refetchIma();
-    } catch (error) {
-      toast.error("Error while minting. Try again.");
-      setIsMinting(false);
-      console.error(error);
-    }
-  };
-
-  const totalSupply = useReadContract({
-    abi: ImaArtifact.abi,
-    address: `0x${ImaArtifact.address[0]}`,
-    functionName: "totalSupply",
-  });
-  const dnaPreview = useReadContract({
-    abi: ImaArtifact.abi,
-    address: `0x${ImaArtifact.address[0]}`,
-    functionName: "deterministicPseudoRandomDNA",
-    args: [totalSupply.data, address],
-  });
-  const image = useReadContract({
-    abi: ImaArtifact.abi,
-    address: `0x${ImaArtifact.address[0]}`,
-    functionName: "imageByDNA",
-    args: [dnaPreview.data],
-  });
+  const {
+    mint,
+    refetchIma,
+    totalSupply,
+    dnaPreview,
+    image,
+    isConnected,
+    address,
+  } = useIma();
 
   const getImasData = useCallback(async () => {
     if (!isConnected) return;
-    refetchIma();
+    return refetchIma();
   }, [totalSupply.isSuccess, dnaPreview.isSuccess, image.isSuccess, address]);
 
-  useEffect(() => {
-    getImasData();
-  }, [getImasData]);
+  const mintHandler = async () => {
+    try {
+      setIsMinting(true);
+      await mint();
 
-  const refetchIma = () => {
-    totalSupply.refetch();
-    dnaPreview.refetch();
-    image.refetch();
-    const formatedURL = image.data
-      ? image.data.toString().replace("getavataaars.com", "avataaars.io")
-      : "";
-    setImageSrc(formatedURL);
+      const urlImage = refetchIma();
+      setImageSrc(urlImage);
+
+      setIsMinting(false);
+      toast("Minted successfully");
+    } catch (error) {
+      toast.error("Error while minting. Try again.");
+      setIsMinting(false);
+      console.error("mintHander error: ", error);
+    }
+  };
+
+  const getImaDataHandler = async () => {
+    try {
+      const nesUrlImage = await getImasData();
+      if (nesUrlImage) setImageSrc(nesUrlImage);
+    } catch (error) {
+      toast.error("Error while update. Try again.");
+      console.error("getImaDataHandler error: ", error);
+    }
   };
 
   return (
@@ -99,7 +71,7 @@ function Home() {
                   !image.isSuccess ||
                   isMinting
                 }
-                onClick={mint}
+                onClick={mintHandler}
               >
                 {isMinting ? "Minting..." : "Get an Avatar"}
               </button>
@@ -132,7 +104,7 @@ function Home() {
                 </div>
                 <button
                   className="mt-4 rounded-full px-6 bg-cyan-400 hover:bg-cyan-500 disabled:bg-cyan-800 text-black font-semibold max-w-min"
-                  onClick={getImasData}
+                  onClick={getImaDataHandler}
                 >
                   Update
                 </button>

@@ -1,51 +1,27 @@
 import { Link } from "react-router-dom";
-// import { useCallback, useEffect, useState } from "react";
-
-import { useAccount, useReadContract } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
+import { toast } from "react-toastify";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
-import ImaArtifact from "../../../config/wagmi/artifacts/Ima";
+import useIma from "../../../hooks/useIma";
 import useTruncatedAddress from "../../../hooks/useTruncatedAddress";
 
 function WalletData() {
-  // const [balance, setBalance] = useState(0);
-  const { address, connector, isConnected } = useAccount();
-  const { data, isLoading } = useReadContract({
-    abi: ImaArtifact.abi,
-    address: `0x${ImaArtifact.address[0]}`,
-    functionName: "balanceOf",
-    args: [address],
-  });
-  // const [isSupportedChain, setIsSupportedChain] = useState(true);
-
-  // const connect = useCallback(() => {
-  //   connector?.connect();
-  //   localStorage.setItem("IMANFT-previouslyConnected", "true");
-  // }, [isConnected]);
+  const { address, connector, isConnected, balanceOf } = useIma();
 
   const disconnect = () => {
-    connector?.disconnect();
-    // localStorage.removeItem("IMANFT-previouslyConnected");
+    try {
+      connector?.disconnect();
+      toast("Disconnect successfully");
+    } catch (error) {
+      toast.error("Error while disconnect. Try again.");
+      console.error("disconnect error: ", error);
+    }
   };
 
-  // useEffect(() => {
-  //   if (localStorage.getItem("IMANFT-previouslyConnected") === "true")
-  //     connect();
-  // }, [connect]);
-
   const truncatedAddress = useTruncatedAddress(address);
-
-  // const getBalance = useCallback(async () => {
-  //   const toSet = await data;
-  //   setBalance(parseInt((toSet / 1e18).toFixed(2)));
-  // }, [connector, address]);
-
-  // useEffect(() => {
-  //   if (isConnected) getBalance();
-  // }, [isConnected, getBalance]);
 
   return (
     <section className="flex items-center">
@@ -56,10 +32,10 @@ function WalletData() {
           </span>
           <span className="hidden md:block text-sm ml-8 font-bold">
             ~
-            {isLoading ? (
+            {balanceOf.isLoading ? (
               <p className="opacity-50">Loading...</p>
             ) : (
-              data?.toString()
+              balanceOf.data?.toString()
             )}{" "}
             Ξ
           </span>
