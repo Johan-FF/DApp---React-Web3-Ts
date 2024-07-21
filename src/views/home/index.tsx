@@ -43,41 +43,6 @@ function Home() {
       console.error(error);
     }
   };
-  // const { writeContract } = useWriteContract();
-
-  // const { data, isLoading, isSuccess, write } = writeContract({
-  // const mint = writeContract({
-  //   abi: ImaArtifact.abi,
-  //   address: `0x${ImaArtifact.address[0]}`,
-  //   functionName: "mint",
-  //   args: [address],
-  //   // onMutate({ args, overrides }) {
-  //   //   console.log("Mutate", { args, overrides });
-  //   //   // toast({
-  //   //   //   title: "Transacción enviada",
-  //   //   //   description: txHash,
-  //   //   //   status: "info",
-  //   //   // });
-  //   // },
-  //   // onSuccess(data: any) {
-  //   //   console.log("Success", data);
-  //   //   // setIsMinting(false);
-  //   //   //   toast({
-  //   //   //     title: "Transacción confirmada",
-  //   //   //     description: "Nunca pares de aprender.",
-  //   //   //     status: "success",
-  //   //   //   });
-  //   // },
-  //   // onError(error: any) {
-  //   //   console.log("Error", error);
-  //   //   // setIsMinting(false);
-  //   //   // toast({
-  //   //   //   title: "Transacción fallida",
-  //   //   //   description: error.message,
-  //   //   //   status: "error",
-  //   //   // });
-  //   // },
-  // });
 
   const totalSupply = useReadContract({
     abi: ImaArtifact.abi,
@@ -110,7 +75,10 @@ function Home() {
     totalSupply.refetch();
     dnaPreview.refetch();
     image.refetch();
-    setImageSrc(image.data ? image.data.toString() : "");
+    const formatedURL = image.data
+      ? image.data.toString().replace("getavataaars.com", "avataaars.io")
+      : "";
+    setImageSrc(formatedURL);
   };
 
   return (

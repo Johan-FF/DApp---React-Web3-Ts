@@ -59,8 +59,9 @@ function WalletData() {
             {isLoading ? (
               <p className="opacity-50">Loading...</p>
             ) : (
-              data?.toString() + " Ξ"
-            )}
+              data?.toString()
+            )}{" "}
+            Ξ
           </span>
           <IconButton className="ml-8" onClick={disconnect}>
             <CloseIcon className="stroke-cyan-400" />
@@ -68,7 +69,6 @@ function WalletData() {
         </div>
       ) : (
         <div>
-          {isConnected ? <h3>Wallet {truncatedAddress}</h3> : null}
           <ConnectButton label="Connect Wallet" />
         </div>
       )}
