@@ -2,39 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { HashRouter } from "react-router-dom";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
-import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { WagmiProvider, http } from "wagmi";
-import {
-  mainnet,
-  polygon,
-  optimism,
-  arbitrum,
-  arbitrumSepolia,
-  base,
-} from "wagmi/chains";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { WagmiProvider } from "wagmi";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 import App from "./App.tsx";
 
-const config = getDefaultConfig({
-  appName: "ImaNFT",
-  projectId: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID,
-  chains: [
-    // mainnet, polygon, optimism, arbitrum, base,
-    arbitrumSepolia,
-  ],
-  transports: {
-    [mainnet.id]: http(""),
-    [polygon.id]: http(""),
-    [optimism.id]: http(""),
-    [arbitrum.id]: http(""),
-    [arbitrumSepolia.id]: http(""),
-    [base.id]: http(""),
-  },
-});
-
-const queryClient = new QueryClient();
+import { config, queryClient } from "./config/wagmi";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -43,6 +20,18 @@ ReactDOM.render(
         <RainbowKitProvider>
           <HashRouter>
             <App />
+            <ToastContainer
+              position="bottom-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="dark"
+            />
           </HashRouter>
         </RainbowKitProvider>
       </QueryClientProvider>

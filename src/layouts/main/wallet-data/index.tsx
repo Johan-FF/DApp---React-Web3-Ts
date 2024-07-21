@@ -7,7 +7,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
-import ImaArtifact from "../../../config/web3/artifacts/Ima";
+import ImaArtifact from "../../../config/wagmi/artifacts/Ima";
 import useTruncatedAddress from "../../../hooks/useTruncatedAddress";
 
 function WalletData() {
@@ -68,11 +68,8 @@ function WalletData() {
         </div>
       ) : (
         <div>
-          {isConnected ? (
-            <h3>Wallet {truncatedAddress}</h3>
-          ) : (
-            <ConnectButton label="Connect Wallet" />
-          )}
+          {isConnected ? <h3>Wallet {truncatedAddress}</h3> : null}
+          <ConnectButton label="Connect Wallet" />
         </div>
       )}
     </section>
