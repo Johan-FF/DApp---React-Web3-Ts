@@ -30,13 +30,13 @@ function WalletData() {
           <span className="ml-8 hover:text-cyan-400 hover:cursor-pointer">
             <Link to={`/imas?address=${address}`}>{truncatedAddress}</Link>
           </span>
-          <span className="hidden md:block text-sm ml-8 font-bold">
+          <span className="hidden md:flex text-sm ml-8 font-bold">
             ~
             {balanceOf.isLoading ? (
               <p className="opacity-50">Loading...</p>
             ) : (
               balanceOf.data?.toString()
-            )}{" "}
+            )}
             Ξ
           </span>
           <IconButton className="ml-8" onClick={disconnect}>

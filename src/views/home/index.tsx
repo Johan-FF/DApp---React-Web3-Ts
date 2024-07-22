@@ -1,4 +1,4 @@
-import reaact, { useCallback, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { toast } from "react-toastify";
@@ -14,17 +14,12 @@ function Home() {
   const {
     mint,
     refetchIma,
+    getImasData,
     totalSupply,
     dnaPreview,
     image,
     isConnected,
-    address,
   } = useIma();
-
-  const getImasData = useCallback(async () => {
-    if (!isConnected) return;
-    return refetchIma();
-  }, [totalSupply.isSuccess, dnaPreview.isSuccess, image.isSuccess, address]);
 
   const mintHandler = async () => {
     try {
@@ -59,8 +54,8 @@ function Home() {
         <section className="flex flex-col-reverse md:flex-row items-center space-x-8 md:space-x-10 w-3/4">
           <div className="flex-1 space-x-5 md:space-x-10">
             <p className="text-5xl max-w-96 p-8 rounded-md bg-[#000000aa]">
-              Create avatars representing NFTs with the{" "}
-              <span className="text-cyan-400">network of your choice</span>.
+              Create avatars representing NFTs with{" "}
+              <span className="text-cyan-400"> your address</span>.
             </p>
             <div className="space-x-4 sm:space-x-6 flex flex-col sm:flex-row mt-4">
               <button
@@ -85,7 +80,11 @@ function Home() {
               <img
                 style={{ filter: "drop-shadow(10px 10px 10px rgba(0, 0, 0))" }}
                 className="w-60"
-                src={isConnected ? imageSrc : "https://avataaars.io/"}
+                src={
+                  isConnected && imageSrc !== ""
+                    ? imageSrc
+                    : "https://avataaars.io/"
+                }
                 alt="Ima NFT"
                 loading="lazy"
               />
@@ -93,14 +92,16 @@ function Home() {
             {isConnected ? (
               <div className="w-full flex flex-col items-center">
                 <div className="mt-2">
-                  <span>
-                    Next ID:
-                    <span className="ml-1 bg-cyan-400">1</span>
-                  </span>
-                  <span className="ml-2">
-                    Address:
-                    <span className="ml-1 bg-cyan-400">0x0000...0000</span>
-                  </span>
+                  {imageSrc !== "" ? (
+                    <span className="mt-2 rounded-md bg-[#000000aa] px-8 font-bold">
+                      Avatar by your Address
+                    </span>
+                  ) : (
+                    <span className="mt-2 rounded-md bg-[#000000aa] px-8 font-bold">
+                      Address:
+                      <span className="ml-1 ">0x0000...0000</span>
+                    </span>
+                  )}
                 </div>
                 <button
                   className="mt-4 rounded-full px-6 bg-cyan-400 hover:bg-cyan-500 disabled:bg-cyan-800 text-black font-semibold max-w-min"
